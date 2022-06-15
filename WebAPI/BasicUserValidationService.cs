@@ -20,7 +20,7 @@ public class BasicUserValidationService : IBasicUserValidationService
 			//var user = await _userRepository.GetUserByUsername(username);
 			//var isValid = user != null && user.Password == password;
 			//return isValid;
-			return username == "test1" && password == "1234!test";
+			return username == "test" && password == "bbbbbbb";
 		}
 		catch (Exception e)
 		{
