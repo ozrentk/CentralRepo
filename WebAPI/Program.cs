@@ -1,9 +1,12 @@
+using AspNetCore.Authentication.Basic;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.BL.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
+    .AddBasic<BasicUserValidationService>(options => { options.Realm = "CentralRepository"; });
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ModelContext>(options =>
@@ -23,6 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
