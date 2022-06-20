@@ -14,9 +14,6 @@ var jwtKey = builder.Configuration["Jwt:Key"];
 AddBasicAuth(builder);
 //AddJwtAuth(builder, jwtIss, jwtKey);
 
-builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
-    .AddBasic<BasicUserValidationService>(options => { options.Realm = "CentralRepository"; });
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ModelContext>(options =>
     options.UseOracle("name=ConnectionStrings:DefaultConnection", 
