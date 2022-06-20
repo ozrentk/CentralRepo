@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.BL.Models;
+using WebAPI.BL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtIss = builder.Configuration["Jwt:Issuer"];
@@ -13,14 +14,20 @@ var jwtKey = builder.Configuration["Jwt:Key"];
 AddBasicAuth(builder);
 //AddJwtAuth(builder, jwtIss, jwtKey);
 
+builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
+    .AddBasic<BasicUserValidationService>(options => { options.Realm = "CentralRepository"; });
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ModelContext>(options =>
-    options.UseOracle("name=ConnectionStrings:DefaultConnection", config => 
+    options.UseOracle("name=ConnectionStrings:DefaultConnection", 
+    config => 
         config.UseOracleSQLCompatibility("11")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IKorisnikService, KorisnikService>();
+
 
 var app = builder.Build();
 
