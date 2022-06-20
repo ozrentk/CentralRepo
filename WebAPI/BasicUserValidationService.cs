@@ -1,4 +1,5 @@
 ﻿using AspNetCore.Authentication.Basic;
+
 public class BasicUserValidationService : IBasicUserValidationService
 {
 	private readonly ILogger<BasicUserValidationService> _logger;
@@ -19,7 +20,7 @@ public class BasicUserValidationService : IBasicUserValidationService
 			//var user = await _userRepository.GetUserByUsername(username);
 			//var isValid = user != null && user.Password == password;
 			//return isValid;
-			return username == "test" && password == "test123!";
+			return username == "user123" && password == "password123";
 		}
 		catch (Exception e)
 		{

@@ -6,6 +6,8 @@ using WebAPI.BL.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
+    .AddBasic<BasicUserValidationService>(options => { options.Realm = "CentralRepository"; });
 
 builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
     .AddBasic<BasicUserValidationService>(options => { options.Realm = "CentralRepository"; });
