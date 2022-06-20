@@ -1,12 +1,17 @@
 using AspNetCore.Authentication.Basic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebAPI.BL.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtIss = builder.Configuration["Jwt:Issuer"];
+var jwtKey = builder.Configuration["Jwt:Key"];
 
 // Add services to the container.
-builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
-    .AddBasic<BasicUserValidationService>(options => { options.Realm = "CentralRepository"; });
+AddBasicAuth(builder);
+//AddJwtAuth(builder, jwtIss, jwtKey);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ModelContext>(options =>
@@ -32,3 +37,35 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void AddBasicAuth(WebApplicationBuilder builder)
+{
+    builder.Services
+        .AddAuthentication(BasicDefaults.AuthenticationScheme)
+        .AddBasic<BasicUserValidationService>(options =>
+        {
+            options.Realm = "CentralRepository";
+        });
+}
+
+static void AddJwtAuth(WebApplicationBuilder builder, string jwtIss, string jwtKey)
+{
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtIss,
+                ValidAudience = jwtIss,
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            jwtKey))
+            };
+        });
+}
